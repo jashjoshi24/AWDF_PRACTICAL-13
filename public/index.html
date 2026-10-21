@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical 13: AI API Integration into a Web Application</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Practical 13: Secure AI API Integration</h1>
+            <p>Backend-only API key handling, graceful degradation, and responsible AI guardrails</p>
+        </header>
+
+        <!-- Notification Banner -->
+        <div id="toast" class="toast hidden"></div>
+
+        <div class="grid-layout">
+            <!-- Left Column: Task Form with AI Generator -->
+            <div class="column">
+                <div class="card">
+                    <h2>➕ Create Task with AI Assistant</h2>
+                    <p class="card-desc">Type a title and click "Auto-Generate with AI" to generate a description</p>
+
+                    <form id="task-form">
+                        <div class="form-group">
+                            <label for="task-title">Task Title *</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="task-title" placeholder="e.g. Optimize React bundle size" required style="flex: 1;">
+                                <button type="button" id="btn-generate-ai" class="btn btn-ai">
+                                    ✨ Generate with AI
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 6 Failure Test Toggle -->
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 0.8rem; color: #4a5568;">
+                            <input type="checkbox" id="toggle-failure" style="cursor: pointer;">
+                            <label for="toggle-failure" style="cursor: pointer;">Simulate AI API Failure (Tests Graceful Degradation)</label>
+                        </div>
+
+                        <!-- Supplementary Problem 1: Loading State -->
+                        <div id="ai-loading" class="ai-loading hidden">
+                            <div class="spinner"></div>
+                            <span>Contacting backend AI endpoint (/api/ai/generate-description)...</span>
+                        </div>
+
+                        <!-- Supplementary Problem 3: AI Disclaimer -->
+                        <div id="ai-disclaimer" class="ai-disclaimer hidden">
+                            <span class="disclaimer-icon">⚠️</span>
+                            <div>
+                                <strong>AI Disclaimer:</strong> The description below is an AI-generated suggestion. Please review and edit before saving.
+                                <div id="ai-source-badge" class="ai-badge"></div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Editable Description Suggestion -->
+                        <div class="form-group">
+                            <label for="task-desc">Task Description (Editable Suggestion) *</label>
+                            <textarea id="task-desc" rows="4" placeholder="Enter description or generate with AI..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="task-priority">Priority (AI-Suggested)</label>
+                            <select id="task-priority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Task</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Task List & Security Architecture -->
+            <div class="column">
+                <div class="card">
+                    <h2>📋 Task List</h2>
+                    <ul id="tasks-list" class="tasks-list"></ul>
+                </div>
+
+                <div class="card">
+                    <h2>🔒 Security & Responsible AI Architecture</h2>
+                    <ul style="font-size: 0.85rem; padding-left: 20px; color: #4a5568; line-height: 1.6;">
+                        <li><strong>Server-Side Secret:</strong> API Key is strictly stored in <code>.env</code> on the Express backend and is <em>never</em> exposed in browser network requests.</li>
+                        <li><strong>Graceful Degradation:</strong> If the AI API fails, times out, or has an invalid key, the app catches the error and generates a template suggestion without crashing.</li>
+                        <li><strong>Rate Limiting:</strong> Enforces a maximum of 5 AI calls/minute per user to prevent quota exhaustion.</li>
+                        <li><strong>Human in the Loop:</strong> Output is presented as an <em>editable suggestion</em>, never forced upon the user.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>AWDF Practical 13 &bull; Charotar University of Science and Technology</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
